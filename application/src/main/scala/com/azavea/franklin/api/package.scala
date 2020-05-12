@@ -5,6 +5,7 @@ import com.azavea.franklin.database.{temporalExtentFromString, temporalExtentToS
 import com.azavea.stac4s._
 import geotrellis.vector.Geometry
 import io.circe.{Encoder, Json}
+import io.circe.parser.parse
 import sttp.tapir.Codec.PlainCodec
 import sttp.tapir.json.circe._
 import sttp.tapir.{Codec, DecodeResult, Schema}
@@ -72,4 +73,11 @@ package object schemas {
   implicit val codecStacItem: Codec.JsonCodec[StacItem] =
     jsonCodec.mapDecode(decStacItem)(encStacItem)
 
+  implicit val plainJsonCodec: PlainCodec[Json] =
+    Codec.stringPlainCodecUtf8.mapDecode(
+      parse(_) match {
+        case Left(err) => DecodeResult.Error(err.getMessage, err)
+        case Right(v)  => DecodeResult.Value(v)
+      }
+    )(_.noSpaces)
 }
