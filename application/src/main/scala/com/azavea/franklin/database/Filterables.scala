@@ -70,7 +70,11 @@ trait Filterables extends GeotrellisWktMeta with FilterHelpers {
       val temporalExtentFilter: Option[Fragment] =
         searchFilters.datetime.flatMap(_.toFilterFragment)
 
-      val layersFilter: Option[Fragment] = searchFilters.layers
+      // poor mans query support
+      val layersFilter: Option[Fragment] = searchFilters.query
+        .flatMap(
+          _.hcursor.downField("query").downField("layers").downField("eq").as[List[String]].toOption
+        )
         .map { layers =>
           fr"""(item #> '{properties, layers}') @> """ ++ Fragment.const(
             s"""'[${layers.map(v => s""""$v"""").mkString(",")}]'::jsonb"""
