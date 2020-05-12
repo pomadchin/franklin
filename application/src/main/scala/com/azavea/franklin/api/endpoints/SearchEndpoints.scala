@@ -20,6 +20,7 @@ object SearchEndpoints {
       .and(query[Option[List[String]]]("ids"))
       .and(query[Option[Int]]("limit"))
       .and(query[Option[String]]("next"))
+      .and(query[Option[List[String]]]("layers"))
       .map(
         (tup: (
             Option[TemporalExtent],
@@ -27,9 +28,10 @@ object SearchEndpoints {
             Option[List[String]],
             Option[List[String]],
             Option[Int],
-            Option[String]
+            Option[String],
+            Option[List[String]]
         )) => {
-          val (temporalExtent, bbox, collections, ids, limit, next) = tup
+          val (temporalExtent, bbox, collections, ids, limit, next, layers) = tup
           SearchFilters(
             bbox,
             temporalExtent,
@@ -37,10 +39,11 @@ object SearchEndpoints {
             collections getOrElse Nil,
             ids getOrElse Nil,
             limit,
-            next
+            next,
+            layers
           )
         }
-      )(sf => (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next))
+      )(sf => (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next, sf.layers))
 
   val searchGet: Endpoint[SearchFilters, Unit, Json, Nothing] =
     base.get
