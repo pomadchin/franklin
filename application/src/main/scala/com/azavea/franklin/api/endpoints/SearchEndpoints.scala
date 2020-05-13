@@ -1,5 +1,6 @@
 package com.azavea.franklin.api.endpoints
 
+import com.azavea.franklin.api.Query
 import com.azavea.franklin.api.schemas._
 import com.azavea.franklin.database._
 import com.azavea.stac4s.{Bbox, TemporalExtent}
@@ -20,7 +21,7 @@ object SearchEndpoints {
       .and(query[Option[List[String]]]("ids"))
       .and(query[Option[Int]]("limit"))
       .and(query[Option[String]]("next"))
-      .and(query[Option[Json]]("query"))
+      .and(query[Option[Query]]("query"))
       .map {
         case (temporalExtent, bbox, collectionsOption, idsOption, limit, next, query) =>
           SearchFilters(

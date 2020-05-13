@@ -73,16 +73,11 @@ trait Filterables extends GeotrellisWktMeta with FilterHelpers {
       // poor mans query extension support
       val eqPropertiesFilters: List[Option[Fragment]] =
         searchFilters.query
-          .traverse { json =>
-            val hc = json.hcursor.downField("query")
-            hc.keys.toList.flatMap { keys =>
-              keys.toList
-                .flatMap { key => hc.downField(key).downField("eq").as[List[String]].toList }
-                .map { layers =>
-                  fr"""(item #> '{properties, layers}') @> """ ++ Fragment.const(
-                    s"""'[${layers.map(v => s""""$v"""").mkString(",")}]'::jsonb"""
-                  )
-                }
+          .traverse {
+            _.traverseThroughProperties("eq") { layers =>
+              fr"""(item #> '{properties, layers}') @> """ ++ Fragment.const(
+                s"""'[${layers.map(v => s""""$v"""").mkString(",")}]'::jsonb"""
+              )
             }
           }
 
