@@ -6,12 +6,14 @@ import cats.implicits._
 
 case class Query(query: Json) {
 
-  def traverseThroughProperties[T](op: String)(layersTransform: List[String] => T): List[T] = {
+  def traverseThroughProperties[T](
+      op: String
+  )(keyTransform: (String, List[String]) => T): List[T] = {
     val hc = query.hcursor
-    hc.keys.toList.flatMap { keys =>
-      keys.toList
-        .flatMap { key => hc.downField(key).downField(op).as[List[String]].toList }
-        .map(layersTransform)
+    hc.keys.toList.flatMap {
+      _.toList.map { key =>
+        keyTransform(key, hc.downField(key).downField(op).as[List[String]].toList.flatten)
+      }
     }
   }
 }

@@ -44,7 +44,9 @@ object SearchEndpoints {
             query
           )
         }
-      )(sf => (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next, sf.query))
+      )(sf =>
+        (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next, sf.query)
+      )
 
   val searchGet: Endpoint[SearchFilters, Unit, Json, Nothing] =
     base.get

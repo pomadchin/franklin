@@ -74,10 +74,10 @@ trait Filterables extends GeotrellisWktMeta with FilterHelpers {
       val eqPropertiesFilters: List[Option[Fragment]] =
         searchFilters.query
           .traverse {
-            _.traverseThroughProperties("eq") { layers =>
-              fr"""(item #> '{properties, layers}') @> """ ++ Fragment.const(
-                s"""'[${layers.map(v => s""""$v"""").mkString(",")}]'::jsonb"""
-              )
+            _.traverseThroughProperties("eq") { (key, values) =>
+              Fragment.const(s"""(item #> '{properties, $key}') @> '[${values
+                .map(v => s""""$v"""")
+                .mkString(",")}]'::jsonb""")
             }
           }
 
