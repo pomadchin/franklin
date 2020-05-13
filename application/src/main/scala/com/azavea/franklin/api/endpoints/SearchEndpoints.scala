@@ -1,5 +1,6 @@
 package com.azavea.franklin.api.endpoints
 
+import com.azavea.franklin.api.Query
 import com.azavea.franklin.api.schemas._
 import com.azavea.franklin.database._
 import com.azavea.stac4s.{Bbox, TemporalExtent}
@@ -20,6 +21,7 @@ object SearchEndpoints {
       .and(query[Option[List[String]]]("ids"))
       .and(query[Option[Int]]("limit"))
       .and(query[Option[String]]("next"))
+      .and(query[Option[Query]]("query"))
       .map(
         (tup: (
             Option[TemporalExtent],
@@ -27,9 +29,10 @@ object SearchEndpoints {
             Option[List[String]],
             Option[List[String]],
             Option[Int],
-            Option[String]
+            Option[String],
+            Option[Query]
         )) => {
-          val (temporalExtent, bbox, collections, ids, limit, next) = tup
+          val (temporalExtent, bbox, collections, ids, limit, next, query) = tup
           SearchFilters(
             bbox,
             temporalExtent,
@@ -37,10 +40,13 @@ object SearchEndpoints {
             collections getOrElse Nil,
             ids getOrElse Nil,
             limit,
-            next
+            next,
+            query
           )
         }
-      )(sf => (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next))
+      )(sf =>
+        (sf.datetime, sf.bbox, Some(sf.collections), Some(sf.items), sf.limit, sf.next, sf.query)
+      )
 
   val searchGet: Endpoint[SearchFilters, Unit, Json, Nothing] =
     base.get
