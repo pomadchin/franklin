@@ -1,10 +1,11 @@
 package com.azavea.franklin.database
 
+import com.azavea.franklin.api.Query
 import com.azavea.stac4s.{Bbox, TemporalExtent}
 import geotrellis.vector.Geometry
 import geotrellis.vector.{io => _, _}
 import io.circe.generic.semiauto._
-import io.circe.{Decoder, HCursor, Json}
+import io.circe.{Decoder, HCursor}
 
 final case class SearchFilters(
     bbox: Option[Bbox],
@@ -14,7 +15,7 @@ final case class SearchFilters(
     items: List[String],
     limit: Option[Int],
     next: Option[String],
-    query: Option[Json]
+    query: Option[Query]
 ) {
   val page = Page(limit, next)
 }
@@ -32,7 +33,7 @@ object SearchFilters {
         itemsOption       <- c.downField("items").as[Option[List[String]]]
         limit             <- c.downField("limit").as[Option[Int]]
         next              <- c.downField("next").as[Option[String]]
-        query             <- c.downField("query").as[Option[Json]]
+        query             <- c.downField("query").as[Option[Query]]
       } yield {
         SearchFilters(
           bbox,
