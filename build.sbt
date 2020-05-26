@@ -155,6 +155,42 @@ lazy val application = (project in file("application"))
     libraryDependencies ++= applicationDependencies
   })
 
+lazy val example = (project in file("example"))
+  .settings(commonSettings)
+  .settings(
+    name := "example",
+    run / fork := true,
+    assembly / test := {},
+    assembly / assemblyMergeStrategy := {
+      case "reference.conf" => MergeStrategy.concat
+      case "application.conf" => MergeStrategy.concat
+      case PathList("META-INF", xs@_*) => xs match {
+        case ("MANIFEST.MF" :: Nil) => MergeStrategy.discard
+        // Concatenate everything in the services directory to keep GeoTools happy.
+        case ("services" :: _ :: Nil) => MergeStrategy.concat
+        // Concatenate these to keep JAI happy.
+        case ("javax.media.jai.registryFile.jai" :: Nil) | ("registryFile.jai" :: Nil) | ("registryFile.jaiext" :: Nil) => MergeStrategy.concat
+        case (name :: Nil) => {
+          // Must exclude META-INF/*.([RD]SA|SF) to avoid "Invalid signature file digest for Manifest main attributes" exception.
+          if (name.endsWith(".RSA") || name.endsWith(".DSA") || name.endsWith(".SF")) MergeStrategy.discard else MergeStrategy.first
+        }
+        case _ => MergeStrategy.first
+      }
+      case _ => MergeStrategy.first
+    }
+  )
+  .settings(libraryDependencies ++= applicationDependencies)
+  .settings(libraryDependencies ++= Seq(
+    "org.locationtech.geotrellis" %% "geotrellis-gdal"        % Versions.GeoTrellisVersion,
+    "com.azavea.geotrellis"       %% "geotrellis-server-ogc"  % Versions.GeotrellisServerVersion,
+    "org.http4s"                  %% "http4s-scala-xml"       % Versions.Http4sVersion,
+    "org.http4s"                  %% "http4s-circe"           % Versions.Http4sVersion,
+    "org.http4s"                  %% "http4s-blaze-client"    % Versions.Http4sVersion,
+    "org.backuity"                %% "ansi-interpolator"      % "1.1.0",
+    "com.github.pureconfig"       %% "pureconfig"             % "0.12.3",
+    "com.github.pureconfig"       %% "pureconfig-cats-effect" % "0.12.2"
+  ))
+
 //////////
 // DOCS //
 //////////
