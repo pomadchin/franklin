@@ -51,6 +51,20 @@ case class RasterSourceConf(
     }
 }
 
+case class StacSourceConf(
+  name: String,
+  title: String,
+  source: String,
+  defaultStyle: Option[String],
+  styles: List[StyleConf],
+  resampleMethod: ResampleMethod = ResampleMethod.DEFAULT,
+  overviewStrategy: OverviewStrategy = OverviewStrategy.DEFAULT
+) extends OgcSourceConf {
+  def toLayer: RasterOgcSource = SimpleSource(
+    name, title, RasterSource(source), defaultStyle, styles.map(_.toStyle), resampleMethod, overviewStrategy
+  )
+}
+
 case class MapAlgebraSourceConf(
   name: String,
   title: String,

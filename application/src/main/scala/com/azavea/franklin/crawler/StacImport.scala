@@ -130,7 +130,7 @@ class StacImport(val catalogRoot: String, serverHost: NonEmptyString) {
               StacLinkType.Collection,
               Some(`application/json`),
               None,
-              Nil
+              JsonObject.empty
             )
             val derivedFromItemLink =
               StacLink(
@@ -138,7 +138,7 @@ class StacImport(val catalogRoot: String, serverHost: NonEmptyString) {
                 StacLinkType.VendorLinkType("derived_from"),
                 Some(`application/json`),
                 None,
-                Nil
+                JsonObject.empty
               )
             val labelCollection = StacCollection(
               "0.9.0",
@@ -150,6 +150,7 @@ class StacImport(val catalogRoot: String, serverHost: NonEmptyString) {
               Proprietary(),
               Nil,
               inCollection.extent.copy(spatial = SpatialExtent(List(forItem.bbox))),
+              JsonObject.empty,
               forItem.properties,
               List(parentCollectionLink, derivedFromItemLink)
             )
@@ -170,7 +171,7 @@ class StacImport(val catalogRoot: String, serverHost: NonEmptyString) {
                   .encode(labelCollection.id, StandardCharsets.UTF_8.toString)}",
                 None,
                 Some("Collection containing items for this item's label geojson asset"),
-                List(StacAssetRole.Data),
+                Set(StacAssetRole.Data),
                 Some(`application/json`)
               )
             )

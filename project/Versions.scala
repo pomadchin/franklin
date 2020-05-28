@@ -12,7 +12,7 @@ object Versions {
   val Flyway                  = "6.4.2"
   val Fs2Version              = "2.3.0"
   val GeoTrellisVersion       = "3.3.0"
-  val GeotrellisServerVersion = "4.1.0"
+  val GeotrellisServerVersion = "4.1.0-29-g8064236-SNAPSHOT"
   val GuavaVersion            = "23.0"
   val HikariVersion           = "3.4.5"
   val Http4sVersion           = "0.21.4"
@@ -32,7 +32,7 @@ object Versions {
   val SourceCodeVersion       = "0.2.1"
   val Specs2Version           = "4.9.4"
   val SpireVersion            = "0.13.0"
-  val Stac4SVersion           = "f2ccdf6-SNAPSHOT"
+  val Stac4SVersion           = "4ffcac1-SNAPSHOT"
   val SttpModelVersion        = "1.1.3"
   val TapirVersion            = "0.15.3"
 }

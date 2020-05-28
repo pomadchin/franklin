@@ -33,7 +33,7 @@ object FeatureExtractor {
       StacLinkType.Collection,
       Some(`application/json`),
       title = Some("Source item's original collection"),
-      Nil
+      JsonObject.empty
     )
 
     val sourceItemLink = StacLink(
@@ -41,7 +41,7 @@ object FeatureExtractor {
       StacLinkType.VendorLinkType("derived_from"),
       Some(`application/json`),
       None,
-      Nil
+      JsonObject.empty
     )
 
     val featureExtent = feature.geom.extent

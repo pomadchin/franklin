@@ -2,9 +2,10 @@ package com.azavea.franklin.api
 
 import com.azavea.stac4s._
 import eu.timepit.refined.types.string.NonEmptyString
-
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+
+import io.circe.JsonObject
 
 package object implicits {
 
@@ -32,7 +33,7 @@ package object implicits {
             StacLinkType.VendorLinkType("tiles"),
             Some(`application/json`),
             Some("Tile URLs for Item"),
-            List.empty
+            JsonObject.empty
           )
           tileLink :: item.links
         }
@@ -50,7 +51,7 @@ package object implicits {
         StacLinkType.VendorLinkType("tiles"),
         Some(`application/json`),
         Some("Tile URLs for Collection"),
-        List.empty
+        JsonObject.empty
       )
       collection.copy(links = tileLink :: collection.links)
     }

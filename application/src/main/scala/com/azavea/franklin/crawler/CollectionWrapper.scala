@@ -2,9 +2,10 @@ package com.azavea.franklin.crawler
 
 import com.azavea.stac4s._
 import eu.timepit.refined.types.string.NonEmptyString
-
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+
+import io.circe.JsonObject
 
 // A wrapper that stores a collection, an optional parent, its children, and its items
 case class CollectionWrapper(
@@ -27,7 +28,7 @@ case class CollectionWrapper(
       StacLinkType.Self,
       Some(`application/geo+json`),
       Some(item.id),
-      List.empty
+      JsonObject.empty
     )
 
     val parentLink = StacLink(
@@ -35,7 +36,7 @@ case class CollectionWrapper(
       StacLinkType.Parent,
       Some(`application/json`),
       collection.title,
-      List.empty
+      JsonObject.empty
     )
 
     val collectionLink = parentLink.copy(rel = StacLinkType.Collection)
@@ -54,7 +55,7 @@ case class CollectionWrapper(
       StacLinkType.StacRoot,
       None,
       None,
-      List.empty
+      JsonObject.empty
     )
 
     val collectionId = URLEncoder.encode(value.id, StandardCharsets.UTF_8.toString)
@@ -67,7 +68,7 @@ case class CollectionWrapper(
         StacLinkType.Item,
         Some(`application/geo+json`),
         Some(item.id),
-        List.empty
+        JsonObject.empty
       )
     }
 
@@ -78,7 +79,7 @@ case class CollectionWrapper(
         StacLinkType.Child,
         Some(`application/json`),
         child.value.title,
-        List.empty
+        JsonObject.empty
       )
     }
 
@@ -90,7 +91,7 @@ case class CollectionWrapper(
           StacLinkType.Parent,
           Some(`application/json`),
           p.value.title,
-          List.empty
+          JsonObject.empty
         )
       )
     }
@@ -100,7 +101,7 @@ case class CollectionWrapper(
       StacLinkType.Self,
       Some(`application/json`),
       value.title,
-      List.empty
+      JsonObject.empty
     )
     val updatedLinks =
       selfLink :: rootLink :: filterLinks(value.links) ++ childrenLinks ++ itemLinks ++ parentLink
